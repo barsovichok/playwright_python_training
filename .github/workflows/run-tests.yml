@@ -48,6 +48,10 @@ jobs:
           pip install -r requirements.txt
           npm install -g allure-commandline
 
+      - name: Install Playwright Browsers
+        run: |
+          python -m playwright install  # This will download the necessary browsers
+
       - name: Prepare allure-results directory
         run: mkdir -p allure-results
 
