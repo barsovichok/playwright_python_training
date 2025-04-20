@@ -18,7 +18,6 @@ jobs:
       HEADLESS_MODE: true
 
     steps:
-      # Кэширование Python зависимостей
       - name: Cache Python dependencies
         uses: actions/cache@v4
         with:
@@ -27,7 +26,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-python-
 
-      # Кэширование npm зависимостей
       - name: Cache npm dependencies
         uses: actions/cache@v4
         with:
@@ -36,34 +34,28 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-npm-
 
-      # Клонирование кода
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Настройка Python 3.12
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: 3.12
 
-      # Установка зависимостей
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           npm install -g allure-commandline
 
-      # Подготовка директории отчётов Allure
       - name: Prepare allure-results directory
         run: mkdir -p allure-results
 
-      # Генерация environment.properties
       - name: Generate environment.properties
         run: |
           echo "TEST_ENV=$TEST_ENV" >> allure-results/environment.properties
           echo "HEADLESS_MODE=$HEADLESS_MODE" >> allure-results/environment.properties
 
-      # Генерация executor.json
       - name: Generate executor.json
         run: |
           echo '{
@@ -76,29 +68,25 @@ jobs:
             "reportName": "Allure Report"
           }' > allure-results/executor.json
 
-      # Копирование истории Allure (если доступна)
       - name: Copy previous history (if available)
         run: |
           mkdir -p allure-results/history
           if [ -d allure-report/history ]; then
             cp -r allure-report/history/* allure-results/history/ || true
+          fi
 
-      # Запуск тестов
       - name: Run tests
         run: pytest --alluredir=allure-results
 
-      # Генерация отчёта Allure
       - name: Generate Allure report
         run: allure generate allure-results --clean -o allure-report
 
-      # Загрузка отчёта Allure как артефакта
       - name: Upload Allure Report as artifact
         uses: actions/upload-artifact@v4
         with:
           name: allure-report
           path: allure-report
 
-      # Деплой на GitHub Pages
       - name: Deploy to GitHub Pages
         if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v3
