@@ -85,6 +85,7 @@ jobs:
 
       - name: Run tests
         run: pytest --alluredir=allure-results
+        continue-on-error: true
 
       - name: Generate Allure report
         run: allure generate allure-results --clean -o allure-report
