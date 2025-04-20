@@ -14,8 +14,12 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      TEST_ENV: dev
-      HEADLESS_MODE: true
+      TEST_ENV: ${{secrets.TEST_ENV }}
+      HEADLESS_MODE: ${{secrets.HEADLESS_MODE }}
+      BASE_URL: ${{secrets.BASE_URL }}
+      INVENTORY_URL: ${{secrets.INVENTORY_URL }}
+
+
 
     steps:
       - name: Cache Python dependencies
