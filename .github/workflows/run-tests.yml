@@ -9,8 +9,6 @@ on:
   schedule:
     - cron: '0 0 * * *'  # Запуск каждый день в полночь по UTC
 
-
-
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -20,53 +18,52 @@ jobs:
       HEADLESS_MODE: true
 
     steps:
-      # Шаг для кэширования зависимостей Python
+      # Кэширование Python зависимостей
       - name: Cache Python dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pip
           key: ${{ runner.os }}-python-${{ hashFiles('**/requirements.txt') }}
           restore-keys: |
             ${{ runner.os }}-python-
 
-      # Шаг для кэширования npm зависимостей
+      # Кэширование npm зависимостей
       - name: Cache npm dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.npm
           key: ${{ runner.os }}-npm-${{ hashFiles('**/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-npm-
 
-      # Шаг для клонирования репозитория
+      # Клонирование кода
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # Шаг для настройки Python 3.12
+      # Настройка Python 3.12
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: 3.12  # Обновлено на Python 3.12
+          python-version: 3.12
 
-      # Шаг для установки зависимостей
+      # Установка зависимостей
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           npm install -g allure-commandline
 
-      # Шаг для подготовки директории для отчётов Allure
+      # Подготовка директории отчётов Allure
       - name: Prepare allure-results directory
-        run: |
-          mkdir -p allure-results
+        run: mkdir -p allure-results
 
-      # Шаг для генерации environment.properties
+      # Генерация environment.properties
       - name: Generate environment.properties
         run: |
           echo "TEST_ENV=$TEST_ENV" >> allure-results/environment.properties
           echo "HEADLESS_MODE=$HEADLESS_MODE" >> allure-results/environment.properties
 
-      # Шаг для генерации executor.json
+      # Генерация executor.json
       - name: Generate executor.json
         run: |
           echo '{
@@ -79,30 +76,29 @@ jobs:
             "reportName": "Allure Report"
           }' > allure-results/executor.json
 
-      # Шаг для копирования предыдущей истории Allure (если доступна)
+      # Копирование истории Allure (если доступна)
       - name: Copy previous history (if available)
         run: |
           mkdir -p allure-results/history
           if [ -d allure-report/history ]; then
             cp -r allure-report/history/* allure-results/history/ || true
-          fi
 
-      # Шаг для запуска тестов
+      # Запуск тестов
       - name: Run tests
         run: pytest --alluredir=allure-results
 
-      # Шаг для генерации отчёта Allure
+      # Генерация отчёта Allure
       - name: Generate Allure report
         run: allure generate allure-results --clean -o allure-report
 
-      # Шаг для загрузки отчёта Allure как артефакт
+      # Загрузка отчёта Allure как артефакта
       - name: Upload Allure Report as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: allure-report
           path: allure-report
 
-      # OPTIONAL: деплой на GitHub Pages (если нужно тренды + публичный отчёт)
+      # Деплой на GitHub Pages
       - name: Deploy to GitHub Pages
         if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v3
