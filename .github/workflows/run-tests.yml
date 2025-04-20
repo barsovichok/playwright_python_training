@@ -96,9 +96,20 @@ jobs:
           name: allure-report
           path: allure-report
 
+      - name: List files in the current directory
+        run: ls -alh
+
+      - name: List files in allure-report
+        run: ls -alh allure-report
+
       - name: Deploy to GitHub Pages
         if: github.ref == 'refs/heads/main'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: playwright_python_training/allure-report
+
+      - name: ✅ Allure Report deployed
+        run:
+          echo "🔗 Allure report: https://barsovichok.github.io/playwright_python_training/"
+
