@@ -2,7 +2,7 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+.env*
 # C extensions
 *.so
 
@@ -172,3 +172,53 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+# Byte-compiled / optimized / DLL files
+*.pyo
+*.pyd
+
+# Virtual environments
+.venv/
+
+
+# IDEs
+.vscode/
+.idea/
+  misc.xml
+  modules.xml
+  playwright_python_training.iml
+  profiles_settings.xml
+  vcs.xml
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+
+.cache/
+
+# Allure results and reports
+allure-results/
+allure-report/
+
+# Playwright stuff
+playwright-report/
+test-results/
+
+# Jupyter notebooks checkpoints (если используешь)
+.ipynb_checkpoints/
+
+# Python dotenv
+.env.*
+!.env.example  # если хочешь оставить шаблон
+
+# Node.js (если ты используешь npm для allure-commandline)
+node_modules/
+package-lock.json
+
+# GitHub actions cache (не обязательно, но бывает полезно)
+*.pid
+
+# VS Code Playwright extension
+.playwright/
+.idea/
+.idea/
