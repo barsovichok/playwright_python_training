@@ -110,6 +110,5 @@ jobs:
           publish_dir: playwright_python_training/allure-report
 
       - name: ✅ Allure Report deployed
-        run: echo
-               "Allure report: https://barsovichok.github.io/playwright_python_training/"
+        run: echo "https://barsovichok.github.io/playwright_python_training/"
 
